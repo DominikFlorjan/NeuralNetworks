@@ -68,5 +68,16 @@ learning_rate = 0.3
 #instance of neural network
 neural = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 
+data_file = open("TrainingData/mnist_train_100.csv", 'r')
+data_list = data_file.readlines()
+data_file.close()
+
+# data from csv to array
+all_values = data_list[0].split(',')
+# converts array of strings [754] to array of floats [28][28] ignoring the first index with [1:]
+image_array = np.asfarray(all_values[1:]).reshape((28,28))
+ptl.imshow(image_array, cmap='Greys',interpolation='None')
+ptl.show()
+
 # Test
 print(neural.query([1.0, 0.5, -1.5]))
