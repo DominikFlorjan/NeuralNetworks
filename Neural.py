@@ -16,7 +16,6 @@ class NeuralNetwork:
         # Weights wih -- Weight_input_hidden
         # who -- weight hidden output
         # Using numpy gaussian normal distribution in point 0.0 with standard dev in second argument and size of matrix in third 
-        # Rozbieżnośc w książce i na githubie !!!!
         self.wih = np.random.normal(0.0, pow(self.inNodes, -0.5), (self.hNodes, self.inNodes)) 
         self.who = np.random.normal(0.0, pow(self.hNodes, -0.5), (self.outNodes, self.hNodes)) 
 
@@ -60,24 +59,31 @@ class NeuralNetwork:
         return final_outputs
 
 #Parameters 
-input_nodes = 3
-hidden_nodes = 3 
-output_nodes = 3
-learning_rate = 0.3
+input_nodes = 784 #28 * 28 pixel size of an image
+hidden_nodes = 200 # arbitrary number  
+output_nodes = 10 # 10 possible outputs 0-9 
+learning_rate = 0.1
 
-#instance of neural network
+# instance of neural network
 neural = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 
-data_file = open("TrainingData/mnist_train_100.csv", 'r')
-data_list = data_file.readlines()
-data_file.close()
+# Training
+training_data_file = open("TrainingData/mnist_train_100.csv", 'r')
+training_data_list = training_data_file.readlines()
+training_data_file.close()
 
-# data from csv to array
-all_values = data_list[0].split(',')
-# converts array of strings [754] to array of floats [28][28] ignoring the first index with [1:]
-image_array = np.asfarray(all_values[1:]).reshape((28,28))
-ptl.imshow(image_array, cmap='Greys',interpolation='None')
-ptl.show()
+for record in training_data_list:
+    # data from csv to array
+    all_values = record.split(',')
+    # Scaling the input to be in range 0.1 - 1, we add 0.01 at the end because we if we didnt we would get a lot of zeroes
+    inputs = (np.asfarray(all_values[1:]) / 255.0 * 0.99) + 0.01
+    targets = np.zeros(output_nodes) + 0.01 
+    # all_values[0] is a label of this particular record so we set its target to max 
+    targets[int(all_values[0])] = 0.99
+    neural.train(inputs, targets)
+    # converts array of strings [754] to array of floats [28][28] ignoring the first index with [1:]
+    # image_array = np.asfarray(all_values[1:]).reshape((28,28))
+    # ptl.imshow(image_array, cmap='Greys',interpolation='None')
+    # ptl.show()
 
-# Test
-print(neural.query([1.0, 0.5, -1.5]))
+# Testing
