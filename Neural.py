@@ -16,8 +16,8 @@ class NeuralNetwork:
         # Weights wih -- Weight_input_hidden
         # who -- weight hidden output
         # Using numpy gaussian normal distribution in point 0.0 with standard dev in second argument and size of matrix in third 
-        self.wih = np.random.normal(0.0, pow(self.inNodes, -0.5), (self.hNodes, self.inNodes)) 
-        self.who = np.random.normal(0.0, pow(self.hNodes, -0.5), (self.outNodes, self.hNodes)) 
+        self.wih = np.random.normal(0.0, pow(self.hNodes, -0.5), (self.hNodes, self.inNodes)) 
+        self.who = np.random.normal(0.0, pow(self.outNodes, -0.5), (self.outNodes, self.hNodes)) 
 
         # Activation function (sigmoid/expit in scipy package)
         self.activation_function = lambda x : scipy.special.expit(x)
@@ -81,9 +81,18 @@ for record in training_data_list:
     # all_values[0] is a label of this particular record so we set its target to max 
     targets[int(all_values[0])] = 0.99
     neural.train(inputs, targets)
-    # converts array of strings [754] to array of floats [28][28] ignoring the first index with [1:]
-    # image_array = np.asfarray(all_values[1:]).reshape((28,28))
-    # ptl.imshow(image_array, cmap='Greys',interpolation='None')
-    # ptl.show()
 
 # Testing
+test_data_file = open("TrainingData/mnist_test_10.csv", 'r')
+test_data_list = test_data_file.readlines()
+test_data_file.close()
+
+all_values = test_data_list[0].split(',')
+print("input: ", all_values[0])
+
+# image_array = np.asfarray(all_values[1:]).reshape((28,28))
+# ptl.imshow(image_array, cmap='Greys', interpolation='None')
+# ptl.show()
+
+input = neural.query((np.asfarray(all_values[1:])/255.0 * 0.99)+ 0.01)
+print(input)
