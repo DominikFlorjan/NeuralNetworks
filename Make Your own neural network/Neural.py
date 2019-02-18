@@ -60,7 +60,7 @@ class NeuralNetwork:
 
 #Parameters 
 input_nodes = 784 #28 * 28 pixel size of an image
-hidden_nodes = 200 # arbitrary number  
+hidden_nodes = 100 # arbitrary number  
 output_nodes = 10 # 10 possible outputs 0-9 
 learning_rate = 0.1
 
@@ -68,7 +68,7 @@ learning_rate = 0.1
 neural = NeuralNetwork(input_nodes, hidden_nodes, output_nodes, learning_rate)
 
 # Training
-training_data_file = open("TrainingData/mnist_train_100.csv", 'r')
+training_data_file = open("TrainingData/mnist_train.csv", 'r')
 training_data_list = training_data_file.readlines()
 training_data_file.close()
 
@@ -83,16 +83,33 @@ for record in training_data_list:
     neural.train(inputs, targets)
 
 # Testing
-test_data_file = open("TrainingData/mnist_test_10.csv", 'r')
+test_data_file = open("TrainingData/mnist_test.csv", 'r')
 test_data_list = test_data_file.readlines()
 test_data_file.close()
-
-all_values = test_data_list[0].split(',')
-print("input: ", all_values[0])
 
 # image_array = np.asfarray(all_values[1:]).reshape((28,28))
 # ptl.imshow(image_array, cmap='Greys', interpolation='None')
 # ptl.show()
 
-input = neural.query((np.asfarray(all_values[1:])/255.0 * 0.99)+ 0.01)
-print(input)
+score = []
+for record in test_data_list: 
+    all_values = record.split(',')
+    correct_label = int(all_values[0])
+    #print(correct_label, "correct label")
+    inputs = (np.asfarray(all_values[1:])/ 255.0 * 0.99) + 0.01
+    outputs = neural.query(inputs)
+    label = np.argmax(outputs)
+    #print(label, "network answer")
+    if(label == correct_label):
+        score.append(1)
+    else: 
+        score.append(0)
+
+score_array = np.asarray(score)
+print("Performance: ", (score_array.sum())/score_array.size)
+
+# # Example query
+# all_values = test_data_list[9].split(',')
+# print("input: ", all_values[0])
+# input = neural.query((np.asfarray(all_values[1:])/255.0 * 0.99)+ 0.01)
+# print(input)
