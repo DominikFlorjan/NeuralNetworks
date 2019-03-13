@@ -13,6 +13,7 @@ class Perceptron{
 
     train(inputs, targets){
         let guess = this.feedForward(inputs);
+        //classic error calculation, error = desired value - what perceptron guessed in feedforward
         let error = targets - guess;
         //Adjust the weights
         for(let i = 0; i < this.weights.length; i++){
@@ -23,14 +24,18 @@ class Perceptron{
     feedForward(inputs){
         let sum = 0;
         for(let i= 0; i < this.weights.length; i++){
-            sum+= weights[i]*inputs[i]; 
+            sum+= this.weights[i]*inputs[i]; 
         } 
-        return activationFunction(sum);
+        return this.activationFunction(sum);
     }
 
     //Very basic activation function
     activationFunction(x){
         if(x>0) return 1;
-        else return 0;
+        else return -1;
+    }
+
+    getWeights(){
+        return this.weights;
     }
 }
